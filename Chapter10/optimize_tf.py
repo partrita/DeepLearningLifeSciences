@@ -22,11 +22,8 @@ model = dc.models.KerasModel(
     loss=dc.models.losses.SigmoidCrossEntropy(),
     output_types=["prediction", "loss"],
     batch_size=1000,
-    model_dir="../Chapter06/tf",
+    model_dir="../tf",
 )
-
-# Reload the trained model parameters.  This assumes you already ran the tfbinding.py
-# script in the Chapter06 directory to train the model.
 model.restore()
 
 # Start with a random sequence.
