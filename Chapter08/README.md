@@ -1,4 +1,5 @@
 To run this example, you will need to download the Kaggle Diabetic Retinopathy dataset from https://www.kaggle.com/c/diabetic-retinopathy-detection. In order to download this dataset, you will need to register with Kaggle. The Kaggle command-line API is needed for the download as well: https://github.com/Kaggle/kaggle-api. See directions there on how to set up the command-line API and get it working.
+> This dataset is about total 85 Gb.
 
 Once you've downloaded the file, you will need to set up the following directory structure
 
