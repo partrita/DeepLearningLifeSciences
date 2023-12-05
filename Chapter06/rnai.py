@@ -1,7 +1,7 @@
 import deepchem as dc
 import tensorflow as tf
 import tensorflow.keras.layers as layers
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 # Train a model to predict how well sequences will work for RNA interference.
 

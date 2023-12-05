@@ -34,13 +34,14 @@ docker run --rm -it -v $PWD:/root/mydir/ deepchemio/deepchem:2.4.0
 #### If nvidia-docker is installed
 
 ```bash
-nvidia-docker run --rm -it deepchemio/deepchem:latest
-docker run --runtime nvidia --rm -it deepchemio/deepchem:latest
+nvidia-docker run --rm -it -v $PWD:/root/mydir/ deepchemio/deepchem:2.4.0
+docker run --runtime nvidia --rm -it -v $PWD:/root/mydir/ deepchemio/deepchem:2.4.0
 ```
 
 #### If nvidia-container-toolkit is installed
 
 ```bash
-docker run --gpus all --rm -it deepchemio/deepchem:latest
-You are now in a docker container which deepchem was installed. You can start playing with it in the command line.
+docker run --gpus all --rm -it -v $PWD:/root/mydir/ deepchemio/deepchem:2.4.0
 ```
+
+You are now in a docker container which deepchem was installed. You can start playing with it in the command line.
