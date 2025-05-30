@@ -11,10 +11,6 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 
-from deepchem.data import NumpyDataset, pad_features
-from deepchem.metrics import to_one_hot
-from deepchem.trans import undo_transforms
-from deepchem.data.data_loader import ImageLoader
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 
@@ -29,7 +25,7 @@ class DRModel(dc.models.KerasModel):
         n_classes=5,
         augment=False,
         batch_size=100,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -129,7 +125,7 @@ class DRModel(dc.models.KerasModel):
             loss=dc.models.losses.SparseSoftmaxCrossEntropy(),
             output_types=["prediction", "loss"],
             batch_size=batch_size,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -189,7 +185,7 @@ class DRAugment(layers.Layer):
         distort_color=True,
         central_crop=True,
         size=(512, 512),
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

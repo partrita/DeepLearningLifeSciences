@@ -55,7 +55,7 @@ def load_images_DR(split="random", seed=None):
 
     classes, cts = np.unique(list(all_labels.values()), return_counts=True)
     weight_ratio = dict(zip(classes, np.max(cts) / cts.astype(float)))
-    weights = np.array([weight_ratio[l[0]] for l in labels]).reshape((-1, 1))
+    weights = np.array([weight_ratio[label[0]] for label in labels]).reshape((-1, 1))
 
     dat = deepchem.data.ImageDataset(image_full_paths, labels, weights)
     if split is None:
