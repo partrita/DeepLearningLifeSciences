@@ -1,16 +1,12 @@
 # Deep Learning for Life Sciences
 
-Example code from the book **"Deep Learning for the Life Sciences"**. This repository provides hands-on examples applying deep learning to problems such as drug discovery, genomics, and protein structure prediction[1].
-
----
+Example code from the book **"Deep Learning for the Life Sciences"**. This repository provides hands-on examples applying deep learning to problems such as drug discovery, genomics, and protein structure prediction.
 
 ## Features
 
 - Example code and tutorials from the book
 - Ready-to-use Docker environment with DeepChem 2.4.0
 - GPU acceleration support (NVIDIA)
-
----
 
 ## Installation
 
@@ -26,8 +22,6 @@ You can use the pre-built Docker image from DockerHub:
 
 Follow the official [Docker installation guide](https://docs.docker.com/engine/install/).
 
----
-
 ### 2. Clone This Repository
 
 Clone the repository to your local machine:
@@ -36,8 +30,6 @@ Clone the repository to your local machine:
 git clone https://github.com/partrita/DeepLearningLifeSciences.git
 cd DeepLearningLifeSciences
 ```
-
----
 
 ## Usage
 
@@ -79,8 +71,6 @@ You can also use the official DeepChem image directly:
 ```bash
 docker run --rm -it -v $PWD:/root/mydir/ deepchemio/deepchem:2.4.0
 ```
-
----
 
 ## References
 
