@@ -2,7 +2,7 @@
 authors = ["fkt <deepthought@postech.ac.kr>"]
 channels = ["conda-forge"]
 name = "DeepLearningLifeSciences"
-platforms = ["linux-64"]
+platforms = ["osx-arm64", "linux-64"]
 version = "0.1.0"
 
 [tasks]
@@ -17,4 +17,4 @@ scikit-learn = "*"
 pandas = "*"
 matplotlib = "*"
 nglview = "*"
-python = ">=3.10"
+python = "3.9.*"
