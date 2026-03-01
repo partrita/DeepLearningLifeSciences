@@ -26,8 +26,7 @@ format:
     theme: cosmo
     code-fold: true
     toc: true
-  pdf:
-    documentclass: scrreprt
+    number-sections: false
 
 execute:
   freeze: auto
