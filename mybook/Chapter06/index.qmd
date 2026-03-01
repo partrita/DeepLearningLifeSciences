@@ -1,0 +1,26 @@
+# Chapter 6: 유전체학
+
+이 장에서는 RNA 간섭(RNAi) 서열 및 전사 인자(Transcription Factor) 결합 등 유전체학에 딥러닝을 적용하는 방법에 대해 살펴봅니다.
+
+## RNA 간섭(RNAi) 예측
+
+siRNA 서열의 효과를 예측하기 위해 합성곱 신경망(CNN)을 구축합니다.
+
+```python
+{{< include rnai.py >}}
+```
+
+## 전사 인자 결합(Transcription Factor Binding)
+
+DNA에 결합하는 전사 인자의 위치를 예측하는 것은 유전체학의 필수적인 작업입니다.
+
+### 단순 DNA 결합
+```python
+{{< include tfbinding.py >}}
+```
+
+### 크로마틴 접근성 데이터와 결합(Binding with Chromatin Accessibility)
+크로마틴 접근성(chromatin accessibility) 데이터를 모델에 포함하여 결합 예측 성능을 향상시키는 예제입니다.
+```python
+{{< include tfbinding_chromatin.py >}}
+```

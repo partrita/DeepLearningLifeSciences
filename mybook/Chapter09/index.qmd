@@ -1,0 +1,11 @@
+# Chapter 9: 생성 모델 - 변분 오토인코더(VAE)
+
+이 장에서는 훈련 데이터와 유사한 새로운 데이터를 생성할 수 있는 모델 중 하나인 변분 오토인코더(Variational Autoencoders, VAEs)를 소개합니다.
+
+## 변분 오토인코더 (VAE)
+
+VAE는 데이터의 밀도 높은 표현(Dense representation)을 학습하고 새로운 샘플을 효과적으로 생성할 수 있는 강력한 도구입니다.
+
+```python
+{{< include vae.py >}}
+```

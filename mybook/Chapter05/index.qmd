@@ -1,0 +1,25 @@
+# Chapter 5: 딥러닝 속 생물물리학
+
+이 장에서는 단백질-리간드 결합에 초점을 맞추어 분자 구조와 상호작용을 이해하기 위한 딥러닝 활용법을 다룹니다.
+
+## PDBID 시각화
+
+`nglview`를 사용하여 단백질-리간드 복합체를 시각화할 수 있습니다. 일부 환경에서는 대화형 위젯이 렌더링되지 않을 수 있습니다.
+
+{{< embed 2D3U_notebook.ipynb >}}
+
+## 결합 친화도(Binding Affinity) 예측
+
+### 신경망(Neural Networks) 사용
+구조적 특징을 기반으로 결합 친화도를 예측하기 위해 멀티태스크 회귀 모델(MultitaskRegressor)과 PDBBind 데이터셋을 사용합니다.
+
+```python
+{{< include pdbbind_nn.py >}}
+```
+
+### 랜덤 포레스트(Random Forests) 사용
+예측을 위해 랜덤 포레스트 모델을 대신 사용할 수도 있습니다.
+
+```python
+{{< include pdbbind_rf.py >}}
+```

@@ -1,0 +1,20 @@
+[workspace]
+authors = ["fkt <deepthought@postech.ac.kr>"]
+channels = ["conda-forge"]
+name = "DeepLearningLifeSciences"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+quarto = ">=1.8.27,<2"
+deepchem = ">=2.7.1"
+tensorflow = ">=2.15"
+ipykernel = "*"
+rdkit = "*"
+scikit-learn = "*"
+pandas = "*"
+matplotlib = "*"
+nglview = "*"
+python = ">=3.10"

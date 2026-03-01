@@ -1,0 +1,33 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Deep Learning for the Life Sciences"
+  author: "DeepChem Team"
+  date: "2026-03-01"
+  chapters:
+    - index.qmd
+    - Chapter03/index.qmd
+    - Chapter04/index.qmd
+    - Chapter05/index.qmd
+    - Chapter06/index.qmd
+    - Chapter07/index.qmd
+    - Chapter08/index.qmd
+    - Chapter09/index.qmd
+    - Chapter10/index.qmd
+    - Chapter11/index.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    code-fold: true
+    toc: true
+  pdf:
+    documentclass: scrreprt
+
+execute:
+  freeze: auto

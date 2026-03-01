@@ -1,0 +1,19 @@
+# Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)
+
+이 장에서는 하이퍼파라미터 최적화(hyperparameter optimization) 및 모델 예측의 불확실성 추정을 포함하는 모델 훈련의 고급 주제를 다룹니다.
+
+## 하이퍼파라미터 최적화 (Hyperparameter Optimization)
+
+모델의 성능을 최고로 끌어올리기 위해서는 하이퍼파라미터를 최적화하는 것이 필수적입니다.
+
+```python
+{{< include optimize_tf.py >}}
+```
+
+## 예측 불확실성 추정 (Estimating Uncertainty)
+
+예측 결과에 따른 결정이 중대한 결과를 초래할 수 있는 생명과학 분야에서 딥러닝 모델의 예측 결과에 대한 신뢰도를 정확히 이해하는 것은 매우 중요합니다.
+
+```python
+{{< include uncertainty.py >}}
+```

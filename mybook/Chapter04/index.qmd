@@ -1,0 +1,45 @@
+# Chapter 4: 분자를 위한 딥러닝
+
+이 장에서는 딥러닝 모델을 사용하여 분자의 물리적 특성, 특히 용해도를 예측해 봅니다.
+
+## 그래프 합성곱 신경망(GCN)을 이용한 용해도 예측
+
+SMILES 문자열로부터 수용성(Aqueous solubility)을 예측하기 위해 Delaney 데이터셋과 GraphConvModel을 사용합니다.
+
+```python
+import deepchem as dc
+from rdkit import Chem
+
+# Delaney 용해도 데이터셋을 로드합니다.
+tasks, datasets, transformers = dc.molnet.load_delaney(featurizer="GraphConv")
+train_dataset, valid_dataset, test_dataset = datasets
+
+# 모델을 생성하고 학습시킵니다.
+model = dc.models.GraphConvModel(n_tasks=1, mode="regression", dropout=0.2)
+model.fit(train_dataset, nb_epoch=100)
+
+# 모델 성능을 평가합니다.
+metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
+print("Training set score")
+print(model.evaluate(train_dataset, [metric], transformers))
+print("Test set score")
+print(model.evaluate(test_dataset, [metric], transformers))
+
+# 샘플 분자들의 용해도를 예측해 봅니다.
+smiles = [
+    "COC(C)(C)CCCC(C)CC=CC(C)=CC(=O)OC(C)C",
+    "CCOC(=O)CC",
+    "CSc1nc(NC(C)C)nc(NC(C)C)n1",
+    "CC(C#C)N(C)C(=O)Nc1ccc(Cl)cc1",
+    "Cc1cc2ccccc2cc1C",
+]
+
+mols = [Chem.MolFromSmiles(s) for s in smiles]
+featurizer = dc.feat.ConvMolFeaturizer()
+x = featurizer.featurize(mols)
+predicted_solubility = model.predict_on_batch(x)
+for m, s in zip(smiles, predicted_solubility):
+    print()
+    print("Molecule:", m)
+    print("Predicted solubility:", s)
+```

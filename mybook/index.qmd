@@ -1,0 +1,31 @@
+# 소개 {.unnumbered}
+
+**"생명과학을 위한 딥러닝 (Deep Learning for the Life Sciences)"** 의 Quarto Book 버전에 오신 것을 환영합니다.
+
+이 책은 신약 개발, 유전체학, 의료 영상 등 생명과학 분야의 중요 문제에 딥러닝을 적용하는 실용적인 예제를 제공합니다.
+
+## 책 구조
+
+이 책의 내용은 다음과 같은 논리적 모듈로 구성되어 있습니다:
+
+- **[Chapter 3: DeepChem과 머신러닝](Chapter03/index.qmd)**: DeepChem의 기초와 기본적인 머신러닝.
+- **[Chapter 4: 분자를 위한 딥러닝](Chapter04/index.qmd)**: 그래프 합성곱 신경망(GCN)을 이용한 용해도 예측.
+- **[Chapter 5: 딥러닝 속 생물물리학](Chapter05/index.qmd)**: 단백질-리간드 결합 및 구조 시각화.
+- **[Chapter 6: 유전체학](Chapter06/index.qmd)**: RNA 간섭(RNAi) 및 전사 인자 결합 예측.
+- **[Chapter 7: 현미경 영상을 위한 딥러닝](Chapter07/index.qmd)**: 자동 세포 계수 및 세분화(Segmentation).
+- **[Chapter 8: 당뇨병성 망막병증 탐지](Chapter08/index.qmd)**: 임상 영상 분석.
+- **[Chapter 9: 생성 모델](Chapter09/index.qmd)**: 데이터 생성을 위한 변분 오토인코더(VAE).
+- **[Chapter 10: 모델 최적화 및 불확실성](Chapter10/index.qmd)**: 고급 훈련 기법 및 신뢰 구간 측정.
+- **[Chapter 11: 특화된 예측 모델](Chapter11/index.qmd)**: ERK2 결합에 대한 사례 연구.
+
+## 대화형 예제 실행
+
+이 책은 **Quarto**와 **Pixi** 기반으로 제작되어, 저장소를 클론하면 코드 셀을 직접 실행해 볼 수 있습니다.
+
+```bash
+pixi run quarto render
+```
+
+---
+
+[DeepChem](https://deepchem.io/)에서 제공하는 예제들을 수정하여 작성되었습니다.
