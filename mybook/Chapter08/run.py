@@ -8,15 +8,15 @@ from model import DRModel, DRAccuracy, ConfusionMatrix, QuadWeightedKappa
 from data import load_images_DR
 
 """
-Created on Mon Sep 10 06:12:11 2018
+2018년 9월 10일 월요일 생성
 
-@author: zqwu
+@작성자: zqwu
 """
 
 RETRAIN = True
 train, valid, test = load_images_DR(split="random", seed=123)
 
-# Define and build model
+# 모델 정의 및 구축
 model = DRModel(
     n_init_kernel=32,
     batch_size=32,
@@ -39,12 +39,12 @@ logger = logging.getLogger("deepchem.models.tensorgraph.tensor_graph")
 logger.setLevel(logging.DEBUG)
 
 if RETRAIN:
-    print("About to fit model for 10 epochs")
+    print("10 에포크 동안 모델 학습을 시작합니다.")
     model.fit(train, nb_epoch=10, checkpoint_interval=1000)
 
-print("About to start train metrics evaluation")
+print("훈련 데이터 지표 평가를 시작합니다.")
 print(model.evaluate(train, metrics, n_classes=5))
-print("About to start valid confusion matrix evaluation")
+print("검증 데이터 혼동 행렬(Confusion Matrix) 평가를 시작합니다.")
 print(model.evaluate(valid, cm, n_classes=5))
-print("About to start test confusion matrix evaluation")
+print("테스트 데이터 혼동 행렬 평가를 시작합니다.")
 print(model.evaluate(test, cm, n_classes=5))

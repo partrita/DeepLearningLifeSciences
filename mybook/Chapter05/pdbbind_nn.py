@@ -1,6 +1,6 @@
 import deepchem as dc
 
-# Use a neural network to predict the PDBBind dataset.  First load the data.
+# 신경망을 활용해 PDBBind 데이터셋의 결합 친화도를 예측합니다. 먼저 데이터를 로드합니다.
 
 featurizer = dc.feat.RdkitGridFeaturizer(
     voxel_width=2.0,
@@ -13,7 +13,7 @@ pdbbind_tasks, pdbbind_datasets, transformers = dc.molnet.load_pdbbind(
 )
 train_dataset, valid_dataset, test_dataset = pdbbind_datasets
 
-# Create and train the model.
+# 모델을 생성하고 학습을 진행합니다.
 n_features = train_dataset.X.shape[1]
 model = dc.models.MultitaskRegressor(
     n_tasks=len(pdbbind_tasks),
@@ -25,11 +25,12 @@ model = dc.models.MultitaskRegressor(
 )
 model.fit(train_dataset, nb_epoch=50)
 
-# Evaluate it.
+# 모델의 성능을 평가합니다.
 metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
 train_scores = model.evaluate(train_dataset, [metric], transformers)
 test_scores = model.evaluate(test_dataset, [metric], transformers)
-print("Train scores")
+
+print("훈련 데이터 평가 점수(Train scores)")
 print(train_scores)
-print("Test scores")
+print("테스트 데이터 평가 점수(Test scores)")
 print(test_scores)

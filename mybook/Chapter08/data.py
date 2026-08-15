@@ -8,23 +8,23 @@ import numpy as np
 import pandas as pd
 
 """
-Diabetic Retinopathy Images loader.
+당뇨병성 망막병증(Diabetic Retinopathy) 영상 로더입니다.
 """
 
 logger = logging.getLogger(__name__)
 
 
 def load_images_DR(split="random", seed=None):
-    """Loader for DR images"""
+    """당뇨병성 망막병증(DR) 영상을 불러오는 로더입니다."""
     data_dir = deepchem.utils.get_data_dir()
     images_path = os.path.join(data_dir, "DR", "train")
     label_path = os.path.join(data_dir, "DR", "trainLabels.csv")
     if not os.path.exists(images_path) or not os.path.exists(label_path):
         logger.warn(
-            "Cannot locate data, \n\
-        all images(.png) should be stored in the folder: $DEEPCHEM_DATA_DIR/DR/train/,\n\
-        corresponding label file should be stored as $DEEPCHEM_DATA_DIR/DR/trainLabels.csv.\n\
-        Please refer to https://www.kaggle.com/c/diabetic-retinopathy-detection for data access"
+            "데이터를 찾을 수 없습니다. \n\
+        모든 영상 파일(.png)은 다음 폴더에 저장되어야 합니다: $DEEPCHEM_DATA_DIR/DR/train/,\n\
+        해당 라벨 파일은 $DEEPCHEM_DATA_DIR/DR/trainLabels.csv 경로에 저장되어야 합니다.\n\
+        데이터 접근에 대해서는 https://www.kaggle.com/c/diabetic-retinopathy-detection를 참조하세요."
         )
 
     image_names = os.listdir(images_path)
@@ -47,7 +47,7 @@ def load_images_DR(split="random", seed=None):
 
     all_labels = dict(zip(*np.transpose(np.array(pd.read_csv(label_path)))))
 
-    print("Number of images: %d" % len(image_names))
+    print("전체 영상 개수: %d" % len(image_names))
     labels = np.array(
         [all_labels[os.path.splitext(n)[0][4:]] for n in image_names]
     ).reshape((-1, 1))
@@ -74,20 +74,20 @@ def load_images_DR(split="random", seed=None):
 
 
 def cut_raw_images(all_images, path):
-    """Preprocess images:
-    (1) Crop the central square including retina
-    (2) Reduce resolution to 512 * 512
+    """영상 전처리를 수행합니다:
+    (1) 망막을 포함한 중앙 영역을 정사각형으로 자릅니다.
+    (2) 해상도를 512 * 512로 조정합니다.
     """
-    print("Num of images to be processed: %d" % len(all_images))
+    print("처리할 영상 개수: %d" % len(all_images))
     try:
         import cv2
     except:  # noqa: E722
-        logger.warn("OpenCV required for image preprocessing")
+        logger.warn("영상 전처리를 위해 OpenCV가 필요합니다.")
         return
 
     for i, img_path in enumerate(all_images):
         if i % 100 == 0:
-            print("on image %d" % i)
+            print("%d번째 영상 처리 중..." % i)
         if os.path.exists(
             os.path.join(path, "cut_" + os.path.splitext(img_path)[0] + ".png")
         ):

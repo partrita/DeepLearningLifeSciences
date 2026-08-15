@@ -1,17 +1,17 @@
 # Chapter 11: 특화된 예측 모델
 
-이 장에서는 ERK2 활성 결합(ERK2 binding) 및 화학물질 라이브러리 필터링(filtering chemical libraries)과 같은 특정 과업을 수행하기 위한 고급 예측 모델에 대해 다룹니다.
+이 장에서는 ERK2 단백질 활성 결합(ERK2 binding) 분석이나 대규모 화학물질 라이브러리 필터링처럼, 특정 연구 목적에 맞게 설계된 고급 예측 모델을 다룹니다.
 
 ## ERK2 예측 모델 (ERK2 Predictive Models)
 
-### 01: 예측 모델 구축 준비
+### 01: 예측 모델 구축을 위한 데이터 준비
 {{< embed chapter_11_01_preparing_to_build_a_predictive_models.ipynb >}}
 
-### 02: 그래프 합성곱 신경망 활용
+### 02: 그래프 합성곱 신경망(GCN) 적용하기
 {{< embed chapter_11_02_erk2_graph_conv.ipynb >}}
 
-### 03: 가상 스크리닝을 위한 라이브러리 필터링
+### 03: 가상 스크리닝을 위한 화학물질 라이브러리 필터링
 {{< embed chapter_11_03_filtering_chemical_libraries.ipynb >}}
 
-### 04: 구축된 예측 모델 사용하기
+### 04: 완성된 예측 모델 실전 활용하기
 {{< embed chapter_11_04_using_the_predictive_model.ipynb >}}

@@ -7,7 +7,7 @@ import re
 
 RETRAIN = False
 
-# Load the datasets.
+# 데이터셋을 로드합니다.
 image_dir = "BBBC005_v1_images"
 files = []
 labels = []
@@ -21,7 +21,7 @@ train_dataset, valid_dataset, test_dataset = splitter.train_valid_test_split(
     dataset, seed=123
 )
 
-# Create the model.
+# 모델을 생성합니다.
 features = tf.keras.Input(shape=(520, 696, 1))
 prev_layer = features
 for num_outputs in [16, 32, 64, 128, 256]:
@@ -46,9 +46,11 @@ if not os.path.exists("./models/model"):
 if not RETRAIN:
     model.restore()
 
-# Train it and evaluate performance on the test set.
+# 모델을 훈련하고 테스트 세트에서 성능을 평가합니다.
 if RETRAIN:
-    print("About to fit model for 50 epochs")
+    print("50 에포크 동안 모델 학습을 시작합니다.")
     model.fit(train_dataset, nb_epoch=50)
+
 y_pred = model.predict(test_dataset).flatten()
-print(np.sqrt(np.mean((y_pred - test_dataset.y) ** 2)))
+rmse = np.sqrt(np.mean((y_pred - test_dataset.y) ** 2))
+print(f"테스트 세트 RMSE(평균 제곱근 오차): {rmse}")

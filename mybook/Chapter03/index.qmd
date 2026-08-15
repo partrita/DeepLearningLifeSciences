@@ -1,24 +1,24 @@
 # Chapter 3: DeepChem과 머신러닝
 
-이 장에서는 생명과학 분야의 머신러닝 작업을 위해 DeepChem을 사용하는 기본적인 방법들을 소개합니다.
+이 장에서는 생명과학 데이터 분석의 든든한 도구인 DeepChem을 활용해 머신러닝의 기초를 다져봅니다.
 
 ## MNIST 필기체 숫자 인식
 
-이 예제는 MNIST 데이터셋의 필기체 숫자를 인식하는 합성곱 신경망(CNN)을 구축하기 위해 Keras와 함께 DeepChem을 사용하는 방법을 설명합니다.
+가장 먼저 다룰 예제는 머신러닝의 'Hello World'와 같은 MNIST 데이터셋입니다. Keras와 DeepChem을 함께 사용해 필기체 숫자를 분류하는 합성곱 신경망(CNN)을 직접 설계하고 훈련해 보겠습니다.
 
 ```python
 import deepchem as dc
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 
-# 데이터셋을 로드하고 라벨을 원-핫(one-hot) 벡터로 변환합니다.
+# 데이터셋을 불러온 뒤, 라벨을 원-핫(one-hot) 벡터 형식으로 변환합니다.
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 y_train = tf.one_hot(y_train, 10).numpy()
 y_test = tf.one_hot(y_test, 10).numpy()
 train_dataset = dc.data.NumpyDataset(x_train, y_train)
 test_dataset = dc.data.NumpyDataset(x_test, y_test)
 
-# 모델을 구축합니다.
+# 모델의 뼈대를 구축합니다.
 features = tf.keras.Input(shape=(28, 28, 1))
 conv2d_1 = layers.Conv2D(filters=32, kernel_size=5, activation=tf.nn.relu)(features)
 conv2d_2 = layers.Conv2D(filters=64, kernel_size=5, activation=tf.nn.relu)(conv2d_1)
@@ -34,10 +34,10 @@ model = dc.models.KerasModel(
     model_dir="mnist",
 )
 
-# 모델을 학습시킵니다.
+# 모델 학습을 시작합니다.
 model.fit(train_dataset, nb_epoch=10)
 
-# 학습 데이터와 테스트 데이터에서 모델 성능을 평가합니다.
+# 학습 과정이 끝나면, 훈련 데이터와 테스트 데이터 각각에서 모델의 정확도를 평가합니다.
 metric = dc.metrics.Metric(dc.metrics.accuracy_score)
 train_scores = model.evaluate(train_dataset, [metric])
 test_scores = model.evaluate(test_dataset, [metric])
@@ -45,23 +45,23 @@ print(train_scores)
 print(test_scores)
 ```
 
-## Tox21을 이용한 독성 예측
+## Tox21 데이터셋을 활용한 독성 예측
 
-Tox21 데이터셋에는 수천 가지 화합물에 대한 독성 데이터가 포함되어 있습니다. 이 예제는 멀티태스크 분류기(Multitask Classifier)를 사용하여 분자의 독성을 예측합니다.
+Tox21 데이터셋은 수천 가지 화합물의 독성 정보를 담고 있습니다. 이번에는 멀티태스크 분류기(Multitask Classifier)를 활용해 복잡한 분자 구조에서 독성 유무를 예측하는 실전 예제를 진행합니다.
 
 ```python
 import numpy as np
 import deepchem as dc
 
-# 데이터를 로드합니다.
+# 데이터를 불러옵니다.
 tox21_tasks, tox21_datasets, transformers = dc.molnet.load_tox21()
 train_dataset, valid_dataset, test_dataset = tox21_datasets
 
-# 모델을 생성하고 학습시킵니다.
+# 모델을 생성하고 10 에포크 동안 학습시킵니다.
 model = dc.models.MultitaskClassifier(n_tasks=12, n_features=1024, layer_sizes=[1000])
 model.fit(train_dataset, nb_epoch=10)
 
-# 학습 데이터와 테스트 데이터에서 모델 성능을 평가합니다.
+# 모델의 성능을 평가하고 결과를 확인합니다.
 metric = dc.metrics.Metric(dc.metrics.roc_auc_score, np.mean)
 train_scores = model.evaluate(train_dataset, [metric], transformers)
 test_scores = model.evaluate(test_dataset, [metric], transformers)

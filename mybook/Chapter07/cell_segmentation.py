@@ -8,7 +8,7 @@ import os
 
 RETRAIN = False
 
-# Load the datasets.
+# 데이터셋을 로드합니다.
 image_dir = "BBBC005_v1_images"
 label_dir = "BBBC005_v1_ground_truth"
 rows = ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P")
@@ -29,10 +29,10 @@ train_dataset, valid_dataset, test_dataset = splitter.train_valid_test_split(
     dataset, seed=123
 )
 
-# Create the model.
+# 모델을 생성합니다.
 features = tf.keras.Input(shape=(520, 696, 1))
 
-# Downsample three times.
+# 다운샘플링(Downsample)을 세 번 수행합니다.
 conv1 = layers.Conv2D(
     16,
     kernel_size=5,
@@ -54,14 +54,14 @@ conv3 = layers.Conv2D(
     activation=tf.nn.relu,
     padding="same",
 )(conv2)
-# Do a 1x1 convolution.
+# 1x1 합성곱을 수행합니다.
 conv4 = layers.Conv2D(
     64,
     kernel_size=1,
     strides=1,
 )(conv3)
 
-# Upsample three times.
+# 업샘플링(Upsample)을 세 번 수행합니다.
 concat1 = layers.Concatenate(axis=3)([conv3, conv4])
 deconv1 = layers.Conv2DTranspose(
     32,
@@ -87,7 +87,7 @@ deconv3 = layers.Conv2DTranspose(
     padding="same",
 )(concat3)
 
-# Compute the final output.
+# 최종 출력을 계산합니다.
 concat4 = layers.Concatenate(axis=3)([features, deconv3])
 logits = layers.Conv2D(1, kernel_size=5, strides=1, padding="same")(concat4)
 output = layers.Activation(tf.math.sigmoid)(logits)
@@ -109,12 +109,14 @@ if not os.path.exists("./models/segmentation"):
 if not RETRAIN:
     model.restore()
 
-# Train it and evaluate performance on the test set.
+# 모델을 훈련하고 테스트 세트에서 성능을 평가합니다.
 if RETRAIN:
-    print("About to fit model for 50 epochs")
+    print("50 에포크 동안 모델 학습을 시작합니다.")
     model.fit(train_dataset, nb_epoch=50, checkpoint_interval=100)
+
 scores = []
 for x, y, w, id in test_dataset.itersamples():
     y_pred = model.predict_on_batch([x]).squeeze()
     scores.append(np.mean((y > 0) == (y_pred > 0.5)))
-print(np.mean(scores))
+
+print(f"테스트 세트 평균 정확도(Mean Accuracy): {np.mean(scores)}")

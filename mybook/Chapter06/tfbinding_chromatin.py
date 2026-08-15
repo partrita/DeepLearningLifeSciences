@@ -3,10 +3,10 @@ import tensorflow as tf
 import tensorflow.keras.layers as layers
 import numpy as np
 
-# Train a model to predict transcription factor binding, based on both
-# sequence and chromatin accessibility.
+# 서열 정보와 크로마틴 접근성(Chromatin Accessibility) 데이터를 모두 활용해
+# 전사 인자 결합을 예측하는 모델을 훈련합니다.
 
-# Build the model.
+# 모델을 구축합니다.
 features = tf.keras.Input(shape=(101, 4))
 accessibility = tf.keras.Input(shape=(1,))
 prev = features
@@ -27,7 +27,7 @@ model = dc.models.KerasModel(
     model_dir="chromatin",
 )
 
-# Load the data.
+# 데이터를 로드합니다.
 train = dc.data.DiskDataset("train_dataset")
 valid = dc.data.DiskDataset("valid_dataset")
 span_accessibility = {}
@@ -36,16 +36,16 @@ for line in open("accessibility.txt"):
     span_accessibility[fields[0]] = float(fields[1])
 
 
-# Define a generator function to produce batches.
+# 배치(batch) 데이터를 생성하는 제너레이터 함수를 정의합니다.
 def generate_batches(dataset, epochs):
     for epoch in range(epochs):
         for X, y, w, ids in dataset.iterbatches(batch_size=1000, pad_batches=True):
             yield ([X, np.array([span_accessibility[id] for id in ids])], [y], [w])
 
 
-# Train the model, tracking its performance on the training and validation datasets.
+# 모델을 훈련하며 훈련 및 검증 데이터셋에서의 성능 변화를 확인합니다.
 metric = dc.metrics.Metric(dc.metrics.roc_auc_score)
 for i in range(20):
     model.fit_generator(generate_batches(train, epochs=10))
-    print(model.evaluate_generator(generate_batches(train, 1), [metric]))
-    print(model.evaluate_generator(generate_batches(valid, 1), [metric]))
+    print(f"에포크 {i*10+10} - 훈련 데이터 ROC-AUC 점수: {model.evaluate_generator(generate_batches(train, 1), [metric])}")
+    print(f"에포크 {i*10+10} - 검증 데이터 ROC-AUC 점수: {model.evaluate_generator(generate_batches(valid, 1), [metric])}")

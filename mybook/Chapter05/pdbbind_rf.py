@@ -1,7 +1,7 @@
 import deepchem as dc
 from sklearn.ensemble import RandomForestRegressor
 
-# Use a random forest to predict the PDBBind dataset.  First load the data.
+# 랜덤 포레스트(Random Forest)를 사용해 PDBBind 데이터셋의 결합 친화도를 예측합니다. 먼저 데이터를 로드합니다.
 
 featurizer = dc.feat.RdkitGridFeaturizer(
     voxel_width=2.0,
@@ -14,16 +14,17 @@ pdbbind_tasks, pdbbind_datasets, transformers = dc.molnet.load_pdbbind(
 )
 train_dataset, valid_dataset, test_dataset = pdbbind_datasets
 
-# Create and train the model.
+# 모델을 생성하고 학습을 진행합니다.
 sklearn_model = RandomForestRegressor(n_estimators=100)
 model = dc.models.SklearnModel(sklearn_model, model_dir="pdbbind_rf")
 model.fit(train_dataset)
 
-# Evaluate it.
+# 모델의 성능을 평가합니다.
 metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
 train_scores = model.evaluate(train_dataset, [metric], transformers)
 test_scores = model.evaluate(test_dataset, [metric], transformers)
-print("Train scores")
+
+print("훈련 데이터 평가 점수(Train scores)")
 print(train_scores)
-print("Test scores")
+print("테스트 데이터 평가 점수(Test scores)")
 print(test_scores)

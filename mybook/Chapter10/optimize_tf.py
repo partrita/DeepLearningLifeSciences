@@ -3,9 +3,9 @@ import tensorflow as tf
 import tensorflow.keras.layers as layers
 import numpy as np
 
-# Identify inputs that maximize the output of the trained TF binding model.
+# 학습된 전사 인자(TF) 결합 모델의 출력을 최대화하는 입력을 찾습니다.
 
-# Start by building the model.
+# 먼저 모델을 구축합니다.
 features = tf.keras.Input(shape=(101, 4))
 prev = features
 
@@ -26,11 +26,11 @@ model = dc.models.KerasModel(
 )
 model.restore()
 
-# Start with a random sequence.
+# 무작위 서열로 시작합니다.
 best_sequence = np.random.randint(4, size=101)
 best_score = float(model.predict_on_batch([dc.metrics.to_one_hot(best_sequence, 4)]))
 
-# Make random changes to it, and keep them if the output increases.
+# 서열에 무작위 변화를 주고, 점수가 높아지는 경우에만 해당 변화를 유지합니다.
 for step in range(1000):
     index = np.random.randint(101)
     base = np.random.randint(4)
@@ -43,5 +43,5 @@ for step in range(1000):
             best_score = score
 
 
-print("Best sequence:", "".join(["ACGT"[i] for i in best_sequence]))
-print("Best score:", score)
+print("최적 서열(Best sequence):", "".join(["ACGT"[i] for i in best_sequence]))
+print("최고 점수(Best score):", score)

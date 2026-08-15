@@ -1,31 +1,31 @@
 # Chapter 4: 분자를 위한 딥러닝
 
-이 장에서는 딥러닝 모델을 사용하여 분자의 물리적 특성, 특히 용해도를 예측해 봅니다.
+이 장에서는 딥러닝 모델이 분자의 물리적 특성을 어떻게 파악하는지 살펴봅니다. 특히 화합물의 중요한 특성 중 하나인 용해도를 직접 예측해 보겠습니다.
 
-## 그래프 합성곱 신경망(GCN)을 이용한 용해도 예측
+## 그래프 합성곱 신경망(GCN)으로 용해도 예측하기
 
-SMILES 문자열로부터 수용성(Aqueous solubility)을 예측하기 위해 Delaney 데이터셋과 GraphConvModel을 사용합니다.
+SMILES 문자열 데이터를 기반으로 화합물의 수용성(Aqueous solubility)을 알아내기 위해 Delaney 데이터셋과 GraphConvModel을 활용합니다. 분자 구조를 그래프로 이해하는 GCN의 힘을 확인해 보세요.
 
 ```python
 import deepchem as dc
 from rdkit import Chem
 
-# Delaney 용해도 데이터셋을 로드합니다.
+# Delaney 용해도 데이터셋을 GraphConv 형식으로 불러옵니다.
 tasks, datasets, transformers = dc.molnet.load_delaney(featurizer="GraphConv")
 train_dataset, valid_dataset, test_dataset = datasets
 
-# 모델을 생성하고 학습시킵니다.
+# 회귀 분석 모델을 생성하고 100 에포크 동안 충분히 학습시킵니다.
 model = dc.models.GraphConvModel(n_tasks=1, mode="regression", dropout=0.2)
 model.fit(train_dataset, nb_epoch=100)
 
-# 모델 성능을 평가합니다.
+# 피어슨 상관계수(R²) 점수로 모델의 성능을 평가합니다.
 metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
 print("Training set score")
 print(model.evaluate(train_dataset, [metric], transformers))
 print("Test set score")
 print(model.evaluate(test_dataset, [metric], transformers))
 
-# 샘플 분자들의 용해도를 예측해 봅니다.
+# 실제 샘플 분자들을 넣어 용해도가 어떻게 나오는지 예측해 보겠습니다.
 smiles = [
     "COC(C)(C)CCCC(C)CC=CC(C)=CC(=O)OC(C)C",
     "CCOC(=O)CC",
