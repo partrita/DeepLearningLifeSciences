@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>Deep Learning for the Life Sciences</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,15 +73,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./Chapter03/index.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-803ae4f7a8810f475153517dc3c4ebae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-2dcff80ce44e81cc327f7b5509d9652d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -187,7 +189,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)</span></a>
+  <a href="./Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 추정</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -213,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#소개" id="toc-소개" class="nav-link active" data-scroll-target="#소개">소개</a>
   <ul class="collapse">
-  <li><a href="#책-구조" id="toc-책-구조" class="nav-link" data-scroll-target="#책-구조">책 구조</a></li>
+  <li><a href="#책의-구성" id="toc-책의-구성" class="nav-link" data-scroll-target="#책의-구성">책의 구성</a></li>
   <li><a href="#대화형-예제-실행" id="toc-대화형-예제-실행" class="nav-link" data-scroll-target="#대화형-예제-실행">대화형 예제 실행</a></li>
   </ul></li>
   </ul>
@@ -255,29 +257,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="소개" class="level1 unnumbered">
 <h1 class="unnumbered">소개</h1>
-<p><strong>“생명과학을 위한 딥러닝 (Deep Learning for the Life Sciences)”</strong> 의 Quarto Book 버전에 오신 것을 환영합니다.</p>
-<p>이 책은 신약 개발, 유전체학, 의료 영상 등 생명과학 분야의 중요 문제에 딥러닝을 적용하는 실용적인 예제를 제공합니다.</p>
-<section id="책-구조" class="level2">
-<h2 class="anchored" data-anchor-id="책-구조">책 구조</h2>
-<p>이 책의 내용은 다음과 같은 논리적 모듈로 구성되어 있습니다:</p>
+<p><strong>“생명과학을 위한 딥러닝 (Deep Learning for the Life Sciences)”</strong> Quarto Book 프로젝트에 오신 것을 환영합니다.</p>
+<p>이 책은 신약 개발부터 유전체학, 의료 영상 분석까지, 생명과학 현장의 핵심적인 문제들을 딥러닝으로 어떻게 해결할 수 있는지 실전 예제를 통해 친절하게 안내합니다.</p>
+<section id="책의-구성" class="level2">
+<h2 class="anchored" data-anchor-id="책의-구성">책의 구성</h2>
+<p>이 책은 생명과학 딥러닝의 전 과정을 체계적인 논리적 모듈로 나누어 다룹니다:</p>
 <ul>
-<li><strong><a href="./Chapter03/index.html">Chapter 3: DeepChem과 머신러닝</a></strong>: DeepChem의 기초와 기본적인 머신러닝.</li>
-<li><strong><a href="./Chapter04/index.html">Chapter 4: 분자를 위한 딥러닝</a></strong>: 그래프 합성곱 신경망(GCN)을 이용한 용해도 예측.</li>
-<li><strong><a href="./Chapter05/index.html">Chapter 5: 딥러닝 속 생물물리학</a></strong>: 단백질-리간드 결합 및 구조 시각화.</li>
-<li><strong><a href="./Chapter06/index.html">Chapter 6: 유전체학</a></strong>: RNA 간섭(RNAi) 및 전사 인자 결합 예측.</li>
-<li><strong><a href="./Chapter07/index.html">Chapter 7: 현미경 영상을 위한 딥러닝</a></strong>: 자동 세포 계수 및 세분화(Segmentation).</li>
-<li><strong><a href="./Chapter08/index.html">Chapter 8: 당뇨병성 망막병증 탐지</a></strong>: 임상 영상 분석.</li>
-<li><strong><a href="./Chapter09/index.html">Chapter 9: 생성 모델</a></strong>: 데이터 생성을 위한 변분 오토인코더(VAE).</li>
-<li><strong><a href="./Chapter10/index.html">Chapter 10: 모델 최적화 및 불확실성</a></strong>: 고급 훈련 기법 및 신뢰 구간 측정.</li>
-<li><strong><a href="./Chapter11/index.html">Chapter 11: 특화된 예측 모델</a></strong>: ERK2 결합에 대한 사례 연구.</li>
+<li><strong><a href="./Chapter03/index.html">Chapter 3: DeepChem과 머신러닝</a></strong>: DeepChem 라이브러리의 기초와 머신러닝 기본기를 다집니다.</li>
+<li><strong><a href="./Chapter04/index.html">Chapter 4: 분자를 위한 딥러닝</a></strong>: 그래프 합성곱 신경망(GCN)을 활용해 분자의 용해도를 직접 예측해 봅니다.</li>
+<li><strong><a href="./Chapter05/index.html">Chapter 5: 딥러닝 속 생물물리학</a></strong>: 단백질과 리간드의 결합 원리를 이해하고 구조를 시각화하는 방법을 배웁니다.</li>
+<li><strong><a href="./Chapter06/index.html">Chapter 6: 유전체학</a></strong>: RNA 간섭(RNAi) 서열 분석과 전사 인자 결합 예측 등 유전체 데이터를 다룹니다.</li>
+<li><strong><a href="./Chapter07/index.html">Chapter 7: 현미경 영상을 위한 딥러닝</a></strong>: 세포 계수와 세분화(Segmentation)를 자동화하는 이미지 처리 기법을 소개합니다.</li>
+<li><strong><a href="./Chapter08/index.html">Chapter 8: 당뇨병성 망막병증 탐지</a></strong>: 실제 의료 현장에서 쓰이는 임상 영상 분석 과정을 경험합니다.</li>
+<li><strong><a href="./Chapter09/index.html">Chapter 9: 생성 모델</a></strong>: 변분 오토인코더(VAE)를 이용해 새로운 데이터를 생성하는 원리를 학습합니다.</li>
+<li><strong><a href="./Chapter10/index.html">Chapter 10: 모델 최적화 및 불확실성</a></strong>: 모델의 성능을 끌어올리는 훈련 기법과 예측 결과의 신뢰도를 측정하는 법을 다룹니다.</li>
+<li><strong><a href="./Chapter11/index.html">Chapter 11: 특화된 예측 모델</a></strong>: ERK2 단백질 결합 사례 연구를 통해 실무 역량을 강화합니다.</li>
 </ul>
 </section>
 <section id="대화형-예제-실행" class="level2">
 <h2 class="anchored" data-anchor-id="대화형-예제-실행">대화형 예제 실행</h2>
-<p>이 책은 <strong>Quarto</strong>와 <strong>Pixi</strong> 기반으로 제작되어, 저장소를 클론하면 코드 셀을 직접 실행해 볼 수 있습니다.</p>
+<p>이 책은 <strong>Quarto</strong>와 <strong>Pixi</strong> 환경에서 제작되었습니다. 저장소를 클론한 뒤 다음 명령어를 입력하면 직접 코드를 실행하고 결과를 확인할 수 있습니다.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run quarto render</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
-<p><a href="https://deepchem.io/">DeepChem</a>에서 제공하는 예제들을 수정하여 작성되었습니다.</p>
+<p>이 예제들은 <a href="https://deepchem.io/">DeepChem</a>에서 제공하는 공식 예제를 바탕으로 실무에 맞춰 수정·보완되었습니다.</p>
 
 
 </section>

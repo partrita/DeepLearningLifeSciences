@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Chapter 11: 특화된 예측 모델 – Deep Learning for the Life Sciences</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -34,15 +37,14 @@ ul.task-list li input[type="checkbox"] {
 <link href="../Chapter10/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-803ae4f7a8810f475153517dc3c4ebae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-2dcff80ce44e81cc327f7b5509d9652d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -154,7 +156,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)</span></a>
+  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 추정</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -180,12 +182,12 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#erk2-예측-모델-erk2-predictive-models" id="toc-erk2-예측-모델-erk2-predictive-models" class="nav-link active" data-scroll-target="#erk2-예측-모델-erk2-predictive-models">ERK2 예측 모델 (ERK2 Predictive Models)</a>
   <ul class="collapse">
-  <li><a href="#예측-모델-구축-준비" id="toc-예측-모델-구축-준비" class="nav-link" data-scroll-target="#예측-모델-구축-준비">01: 예측 모델 구축 준비</a></li>
+  <li><a href="#예측-모델-구축을-위한-데이터-준비" id="toc-예측-모델-구축을-위한-데이터-준비" class="nav-link" data-scroll-target="#예측-모델-구축을-위한-데이터-준비">01: 예측 모델 구축을 위한 데이터 준비</a></li>
   <li><a href="#예측-모델-구축을-위한-데이터셋-준비" id="toc-예측-모델-구축을-위한-데이터셋-준비" class="nav-link" data-scroll-target="#예측-모델-구축을-위한-데이터셋-준비">예측 모델 구축을 위한 데이터셋 준비</a></li>
-  <li><a href="#그래프-합성곱-신경망-활용" id="toc-그래프-합성곱-신경망-활용" class="nav-link" data-scroll-target="#그래프-합성곱-신경망-활용">02: 그래프 합성곱 신경망 활용</a></li>
+  <li><a href="#그래프-합성곱-신경망gcn-적용하기" id="toc-그래프-합성곱-신경망gcn-적용하기" class="nav-link" data-scroll-target="#그래프-합성곱-신경망gcn-적용하기">02: 그래프 합성곱 신경망(GCN) 적용하기</a></li>
   <li><a href="#그래프-합성곱graph-convolution-모델-학습" id="toc-그래프-합성곱graph-convolution-모델-학습" class="nav-link" data-scroll-target="#그래프-합성곱graph-convolution-모델-학습">그래프 합성곱(Graph Convolution) 모델 학습</a></li>
-  <li><a href="#가상-스크리닝을-위한-라이브러리-필터링" id="toc-가상-스크리닝을-위한-라이브러리-필터링" class="nav-link" data-scroll-target="#가상-스크리닝을-위한-라이브러리-필터링">03: 가상 스크리닝을 위한 라이브러리 필터링</a></li>
-  <li><a href="#구축된-예측-모델-사용하기" id="toc-구축된-예측-모델-사용하기" class="nav-link" data-scroll-target="#구축된-예측-모델-사용하기">04: 구축된 예측 모델 사용하기</a></li>
+  <li><a href="#가상-스크리닝을-위한-화학물질-라이브러리-필터링" id="toc-가상-스크리닝을-위한-화학물질-라이브러리-필터링" class="nav-link" data-scroll-target="#가상-스크리닝을-위한-화학물질-라이브러리-필터링">03: 가상 스크리닝을 위한 화학물질 라이브러리 필터링</a></li>
+  <li><a href="#완성된-예측-모델-실전-활용하기" id="toc-완성된-예측-모델-실전-활용하기" class="nav-link" data-scroll-target="#완성된-예측-모델-실전-활용하기">04: 완성된 예측 모델 실전 활용하기</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -212,11 +214,11 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>이 장에서는 ERK2 활성 결합(ERK2 binding) 및 화학물질 라이브러리 필터링(filtering chemical libraries)과 같은 특정 과업을 수행하기 위한 고급 예측 모델에 대해 다룹니다.</p>
+<p>이 장에서는 ERK2 단백질 활성 결합(ERK2 binding) 분석이나 대규모 화학물질 라이브러리 필터링처럼, 특정 연구 목적에 맞게 설계된 고급 예측 모델을 다룹니다.</p>
 <section id="erk2-예측-모델-erk2-predictive-models" class="level2">
 <h2 class="anchored" data-anchor-id="erk2-예측-모델-erk2-predictive-models">ERK2 예측 모델 (ERK2 Predictive Models)</h2>
-<section id="예측-모델-구축-준비" class="level3">
-<h3 class="anchored" data-anchor-id="예측-모델-구축-준비">01: 예측 모델 구축 준비</h3>
+<section id="예측-모델-구축을-위한-데이터-준비" class="level3">
+<h3 class="anchored" data-anchor-id="예측-모델-구축을-위한-데이터-준비">01: 예측 모델 구축을 위한 데이터 준비</h3>
 </section>
 <section id="예측-모델-구축을-위한-데이터셋-준비" class="level3 quarto-embed-nb-cell" data-notebook="/home/runner/work/DeepLearningLifeSciences/DeepLearningLifeSciences/mybook/Chapter11/chapter_11_01_preparing_to_build_a_predictive_models.ipynb" data-notebook-title="예측 모델 구축을 위한 데이터셋 준비" data-notebook-cellid="cell-0">
 <h3 class="anchored" data-anchor-id="예측-모델-구축을-위한-데이터셋-준비">예측 모델 구축을 위한 데이터셋 준비</h3>
@@ -422,8 +424,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>마지막 단계로 기존 파일의 끝단에서 마무리된 새로운 통합 문서 데이터 combined_df 를 최종 csv 파일에 이식하여 담아내는 과정입니다. <code>index=False</code> 옵션을 활용함으로써 데이터 조립기인 Pandas 모듈이 csv 출력을 담당 시 인덱스 라벨들을 파일 앞쪽 열(column)에 무단 기재하는 현상을 차단할 수 있습니다.</p>
 </section>
-<section id="그래프-합성곱-신경망-활용" class="level3">
-<h3 class="anchored" data-anchor-id="그래프-합성곱-신경망-활용">02: 그래프 합성곱 신경망 활용</h3>
+<section id="그래프-합성곱-신경망gcn-적용하기" class="level3">
+<h3 class="anchored" data-anchor-id="그래프-합성곱-신경망gcn-적용하기">02: 그래프 합성곱 신경망(GCN) 적용하기</h3>
 </section>
 <section id="그래프-합성곱graph-convolution-모델-학습" class="level3 quarto-embed-nb-cell" data-notebook="/home/runner/work/DeepLearningLifeSciences/DeepLearningLifeSciences/mybook/Chapter11/chapter_11_02_erk2_graph_conv.ipynb" data-notebook-title="그래프 합성곱(Graph Convolution) 모델 학습" data-notebook-cellid="cell-0">
 <h3 class="anchored" data-anchor-id="그래프-합성곱graph-convolution-모델-학습">그래프 합성곱(Graph Convolution) 모델 학습</h3>
@@ -1295,8 +1297,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="가상-스크리닝을-위한-라이브러리-필터링" class="level3">
-<h3 class="anchored" data-anchor-id="가상-스크리닝을-위한-라이브러리-필터링">03: 가상 스크리닝을 위한 라이브러리 필터링</h3>
+<section id="가상-스크리닝을-위한-화학물질-라이브러리-필터링" class="level3">
+<h3 class="anchored" data-anchor-id="가상-스크리닝을-위한-화학물질-라이브러리-필터링">03: 가상 스크리닝을 위한 화학물질 라이브러리 필터링</h3>
 <div class="quarto-embed-nb-cell" data-notebook="/home/runner/work/DeepLearningLifeSciences/DeepLearningLifeSciences/mybook/Chapter11/chapter_11_03_filtering_chemical_libraries.ipynb" data-notebook-cellid="cell-0">
 <p>예측 모델이 만들어졌으므로 이 모델을 새로운 분자 집합에 적용할 수 있습니다. 예측 모델을 만들고 나서 보통 선별하고자 하는 분자들의 집합에 적용하곤 합니다. 이런 분자들은 내부 데이터베이스나 상용 스크리닝 컬렉션에서 가져올 수 있습니다. 예제로 ZINC 데이터베이스의 10만 개 화합물 샘플을 모델로 선별(screen)해 볼 것입니다.</p>
 <p>가상 스크리닝(virtual screening)을 진행할 때 어려운 점 중 하나는 생물학적 분석을 방해할 수 있는 분자들이 포함되어 있다는 점입니다. 지난 25년간 많은 그룹이 잠재적으로 반응성이 높거나 문제가 있는 분자를 식별하기 위해 규칙적인 컴퓨팅 필터를 개발해 왔습니다. 그중 ChEMBL 데이터베이스를 큐레이팅하는 그룹이 수집한 SMARTS 문자열로 인코딩된 여러 규칙 세트가 <code>rd_filters.py</code>라는 파이썬 스크립트로 제공됩니다. 우리는 ZINC 데이터베이스의 10만 개 화합물 중에서 문제가 발생할 소지가 있는 분자를 걸러내는 데 이 스크립트를 사용합니다.</p>
@@ -1499,8 +1501,8 @@ Elapsed time 3.44 seconds</code></pre>
 <p>위에서 볼 수 있듯, 이 화합물들은 명확하게 다이카보닐 그룹을 가지고 있습니다. 필요하다면 이런 방식으로 다른 펄터 결과도 평가해 볼 수 있습니다.</p>
 </div>
 </section>
-<section id="구축된-예측-모델-사용하기" class="level3">
-<h3 class="anchored" data-anchor-id="구축된-예측-모델-사용하기">04: 구축된 예측 모델 사용하기</h3>
+<section id="완성된-예측-모델-실전-활용하기" class="level3">
+<h3 class="anchored" data-anchor-id="완성된-예측-모델-실전-활용하기">04: 완성된 예측 모델 실전 활용하기</h3>
 <div class="quarto-embed-nb-cell" data-notebook="/home/runner/work/DeepLearningLifeSciences/DeepLearningLifeSciences/mybook/Chapter11/chapter_11_04_using_the_predictive_model.ipynb" data-notebook-cellid="cell-0">
 <p>우리가 개발한 GraphConv 모델은 이제 방금 전에 필터를 적용한 상용 화합물 라이브러리의 선별 작업에 응용될 수 있습니다. 모델 적용 단계는 아래의 수순으로 수행됩니다. 1. 디스크에서 모델 읽어들이기 2. Featurizer 모델 준비하기 3. 예측 모델에 적용할 분자 데이터를 읽어 들이고 수치적 특징(features)를 할당하기 4. 예측 스코어 조사하기 5. 최상위 점수를 기록한 개체들의 실질적 화학 구조 점검하기 6. 선별된 분자들로 유사 군집 조직(Clustering)화 7. 최종적으로 각 그룹에서 가장 대표적인 화합물을 선별하여 CSV 파일로 기재</p>
 <p>시작 단계로 필수 라이브러리 모듈들을 로드할 것입니다.</p>
@@ -2150,8 +2152,8 @@ Elapsed time 3.44 seconds</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../Chapter10/index.html" class="pagination-link" aria-label="Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)</span></span>
+      <a href="../Chapter10/index.html" class="pagination-link" aria-label="Chapter 10: 모델 최적화 및 불확실성 추정">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 추정</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

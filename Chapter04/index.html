@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Chapter 4: 분자를 위한 딥러닝 – Deep Learning for the Life Sciences</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -69,15 +72,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../Chapter03/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-803ae4f7a8810f475153517dc3c4ebae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-2dcff80ce44e81cc327f7b5509d9652d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -186,7 +188,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)</span></a>
+  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 추정</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -210,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#그래프-합성곱-신경망gcn을-이용한-용해도-예측" id="toc-그래프-합성곱-신경망gcn을-이용한-용해도-예측" class="nav-link active" data-scroll-target="#그래프-합성곱-신경망gcn을-이용한-용해도-예측">그래프 합성곱 신경망(GCN)을 이용한 용해도 예측</a></li>
+  <li><a href="#그래프-합성곱-신경망gcn으로-용해도-예측하기" id="toc-그래프-합성곱-신경망gcn으로-용해도-예측하기" class="nav-link active" data-scroll-target="#그래프-합성곱-신경망gcn으로-용해도-예측하기">그래프 합성곱 신경망(GCN)으로 용해도 예측하기</a></li>
   </ul>
 </nav>
     </div>
@@ -236,29 +238,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>이 장에서는 딥러닝 모델을 사용하여 분자의 물리적 특성, 특히 용해도를 예측해 봅니다.</p>
-<section id="그래프-합성곱-신경망gcn을-이용한-용해도-예측" class="level2">
-<h2 class="anchored" data-anchor-id="그래프-합성곱-신경망gcn을-이용한-용해도-예측">그래프 합성곱 신경망(GCN)을 이용한 용해도 예측</h2>
-<p>SMILES 문자열로부터 수용성(Aqueous solubility)을 예측하기 위해 Delaney 데이터셋과 GraphConvModel을 사용합니다.</p>
+<p>이 장에서는 딥러닝 모델이 분자의 물리적 특성을 어떻게 파악하는지 살펴봅니다. 특히 화합물의 중요한 특성 중 하나인 용해도를 직접 예측해 보겠습니다.</p>
+<section id="그래프-합성곱-신경망gcn으로-용해도-예측하기" class="level2">
+<h2 class="anchored" data-anchor-id="그래프-합성곱-신경망gcn으로-용해도-예측하기">그래프 합성곱 신경망(GCN)으로 용해도 예측하기</h2>
+<p>SMILES 문자열 데이터를 기반으로 화합물의 수용성(Aqueous solubility)을 알아내기 위해 Delaney 데이터셋과 GraphConvModel을 활용합니다. 분자 구조를 그래프로 이해하는 GCN의 힘을 확인해 보세요.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> deepchem <span class="im">as</span> dc</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rdkit <span class="im">import</span> Chem</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Delaney 용해도 데이터셋을 로드합니다.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Delaney 용해도 데이터셋을 GraphConv 형식으로 불러옵니다.</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>tasks, datasets, transformers <span class="op">=</span> dc.molnet.load_delaney(featurizer<span class="op">=</span><span class="st">"GraphConv"</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>train_dataset, valid_dataset, test_dataset <span class="op">=</span> datasets</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델을 생성하고 학습시킵니다.</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 회귀 분석 모델을 생성하고 100 에포크 동안 충분히 학습시킵니다.</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> dc.models.GraphConvModel(n_tasks<span class="op">=</span><span class="dv">1</span>, mode<span class="op">=</span><span class="st">"regression"</span>, dropout<span class="op">=</span><span class="fl">0.2</span>)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>model.fit(train_dataset, nb_epoch<span class="op">=</span><span class="dv">100</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델 성능을 평가합니다.</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 피어슨 상관계수(R²) 점수로 모델의 성능을 평가합니다.</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>metric <span class="op">=</span> dc.metrics.Metric(dc.metrics.pearson_r2_score)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Training set score"</span>)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.evaluate(train_dataset, [metric], transformers))</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test set score"</span>)</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.evaluate(test_dataset, [metric], transformers))</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 샘플 분자들의 용해도를 예측해 봅니다.</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 실제 샘플 분자들을 넣어 용해도가 어떻게 나오는지 예측해 보겠습니다.</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>smiles <span class="op">=</span> [</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"COC(C)(C)CCCC(C)CC=CC(C)=CC(=O)OC(C)C"</span>,</span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CCOC(=O)CC"</span>,</span>

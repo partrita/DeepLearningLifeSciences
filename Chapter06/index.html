@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Chapter 6: 유전체학 – Deep Learning for the Life Sciences</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -69,15 +72,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../Chapter05/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-803ae4f7a8810f475153517dc3c4ebae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-2dcff80ce44e81cc327f7b5509d9652d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -186,7 +188,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)</span></a>
+  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 추정</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -211,10 +213,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#rna-간섭rnai-예측" id="toc-rna-간섭rnai-예측" class="nav-link active" data-scroll-target="#rna-간섭rnai-예측">RNA 간섭(RNAi) 예측</a></li>
-  <li><a href="#전사-인자-결합transcription-factor-binding" id="toc-전사-인자-결합transcription-factor-binding" class="nav-link" data-scroll-target="#전사-인자-결합transcription-factor-binding">전사 인자 결합(Transcription Factor Binding)</a>
+  <li><a href="#전사-인자-결합transcription-factor-binding-예측" id="toc-전사-인자-결합transcription-factor-binding-예측" class="nav-link" data-scroll-target="#전사-인자-결합transcription-factor-binding-예측">전사 인자 결합(Transcription Factor Binding) 예측</a>
   <ul class="collapse">
-  <li><a href="#단순-dna-결합" id="toc-단순-dna-결합" class="nav-link" data-scroll-target="#단순-dna-결합">단순 DNA 결합</a></li>
-  <li><a href="#크로마틴-접근성-데이터와-결합binding-with-chromatin-accessibility" id="toc-크로마틴-접근성-데이터와-결합binding-with-chromatin-accessibility" class="nav-link" data-scroll-target="#크로마틴-접근성-데이터와-결합binding-with-chromatin-accessibility">크로마틴 접근성 데이터와 결합(Binding with Chromatin Accessibility)</a></li>
+  <li><a href="#기본적인-dna-결합-분석" id="toc-기본적인-dna-결합-분석" class="nav-link" data-scroll-target="#기본적인-dna-결합-분석">기본적인 DNA 결합 분석</a></li>
+  <li><a href="#크로마틴-접근성-데이터-활용하기" id="toc-크로마틴-접근성-데이터-활용하기" class="nav-link" data-scroll-target="#크로마틴-접근성-데이터-활용하기">크로마틴 접근성 데이터 활용하기</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -241,18 +243,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>이 장에서는 RNA 간섭(RNAi) 서열 및 전사 인자(Transcription Factor) 결합 등 유전체학에 딥러닝을 적용하는 방법에 대해 살펴봅니다.</p>
+<p>이 장에서는 RNA 간섭(RNAi) 서열과 전사 인자(Transcription Factor) 결합 등 생명의 설계도인 유전체 데이터를 딥러닝으로 분석하는 방법을 살펴봅니다.</p>
 <section id="rna-간섭rnai-예측" class="level2">
 <h2 class="anchored" data-anchor-id="rna-간섭rnai-예측">RNA 간섭(RNAi) 예측</h2>
-<p>siRNA 서열의 효과를 예측하기 위해 합성곱 신경망(CNN)을 구축합니다.</p>
+<p>siRNA 서열이 실제로 어떤 효과를 내는지 예측하기 위해 합성곱 신경망(CNN) 모델을 구축해 봅니다.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> deepchem <span class="im">as</span> dc</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow.keras.layers <span class="im">as</span> layers</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import matplotlib.pyplot as plt</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Train a model to predict how well sequences will work for RNA interference.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 특정 서열이 RNA 간섭(RNA interference)에 얼마나 효과적인지 예측하는 모델을 훈련합니다.</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the model.</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델을 구축합니다.</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">21</span>, <span class="dv">4</span>))</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>prev <span class="op">=</span> features</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
@@ -266,29 +268,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    keras_model, loss<span class="op">=</span>dc.models.losses.L2Loss(), batch_size<span class="op">=</span><span class="dv">1000</span>, model_dir<span class="op">=</span><span class="st">"rnai"</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data.</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터를 로드합니다.</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> dc.data.DiskDataset(<span class="st">"train_siRNA"</span>)</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>valid <span class="op">=</span> dc.data.DiskDataset(<span class="st">"valid_siRNA"</span>)</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model, tracking its performance on the training and validation datasets.</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델을 훈련하며 훈련 및 검증 데이터셋에서의 성능 변화를 확인합니다.</span></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>metric <span class="op">=</span> dc.metrics.Metric(dc.metrics.pearsonr, mode<span class="op">=</span><span class="st">"regression"</span>)</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    model.fit(train, nb_epoch<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(model.evaluate(train, [metric])[<span class="st">"pearsonr"</span>])</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(model.evaluate(valid, [metric])[<span class="st">"pearsonr"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"에포크 </span><span class="sc">{</span>i<span class="op">*</span><span class="dv">10</span><span class="op">+</span><span class="dv">10</span><span class="sc">}</span><span class="ss"> - 훈련 데이터 피어슨 상관계수: </span><span class="sc">{</span>model<span class="sc">.</span>evaluate(train, [metric])[<span class="st">'pearsonr'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"에포크 </span><span class="sc">{</span>i<span class="op">*</span><span class="dv">10</span><span class="op">+</span><span class="dv">10</span><span class="sc">}</span><span class="ss"> - 검증 데이터 피어슨 상관계수: </span><span class="sc">{</span>model<span class="sc">.</span>evaluate(valid, [metric])[<span class="st">'pearsonr'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="전사-인자-결합transcription-factor-binding" class="level2">
-<h2 class="anchored" data-anchor-id="전사-인자-결합transcription-factor-binding">전사 인자 결합(Transcription Factor Binding)</h2>
-<p>DNA에 결합하는 전사 인자의 위치를 예측하는 것은 유전체학의 필수적인 작업입니다.</p>
-<section id="단순-dna-결합" class="level3">
-<h3 class="anchored" data-anchor-id="단순-dna-결합">단순 DNA 결합</h3>
+<section id="전사-인자-결합transcription-factor-binding-예측" class="level2">
+<h2 class="anchored" data-anchor-id="전사-인자-결합transcription-factor-binding-예측">전사 인자 결합(Transcription Factor Binding) 예측</h2>
+<p>DNA의 특정 부위에 결합하는 전사 인자의 위치를 찾아내는 일은 유전체 연구의 핵심 과제 중 하나입니다.</p>
+<section id="기본적인-dna-결합-분석" class="level3">
+<h3 class="anchored" data-anchor-id="기본적인-dna-결합-분석">기본적인 DNA 결합 분석</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> deepchem <span class="im">as</span> dc</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow.keras.layers <span class="im">as</span> layers</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Train a model to predict binding sites for the transcription factor JUND.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 전사 인자(Transcription Factor)인 JUND의 결합 부위를 예측하는 모델을 훈련합니다.</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the model.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델을 구축합니다.</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">101</span>, <span class="dv">4</span>))</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>prev <span class="op">=</span> features</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
@@ -307,29 +309,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    model_dir<span class="op">=</span><span class="st">"tf"</span>,</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data.</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터를 로드합니다.</span></span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> dc.data.DiskDataset(<span class="st">"train_dataset"</span>)</span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>valid <span class="op">=</span> dc.data.DiskDataset(<span class="st">"valid_dataset"</span>)</span>
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model, tracking its performance on the training and validation datasets.</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델을 훈련하며 훈련 및 검증 데이터셋에서의 성능 변화를 확인합니다.</span></span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>metric <span class="op">=</span> dc.metrics.Metric(dc.metrics.roc_auc_score)</span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):</span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    model.fit(train, nb_epoch<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(model.evaluate(train, [metric]))</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(model.evaluate(valid, [metric]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"에포크 </span><span class="sc">{</span>i<span class="op">*</span><span class="dv">10</span><span class="op">+</span><span class="dv">10</span><span class="sc">}</span><span class="ss"> - 훈련 데이터 ROC-AUC 점수: </span><span class="sc">{</span>model<span class="sc">.</span>evaluate(train, [metric])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"에포크 </span><span class="sc">{</span>i<span class="op">*</span><span class="dv">10</span><span class="op">+</span><span class="dv">10</span><span class="sc">}</span><span class="ss"> - 검증 데이터 ROC-AUC 점수: </span><span class="sc">{</span>model<span class="sc">.</span>evaluate(valid, [metric])<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="크로마틴-접근성-데이터와-결합binding-with-chromatin-accessibility" class="level3">
-<h3 class="anchored" data-anchor-id="크로마틴-접근성-데이터와-결합binding-with-chromatin-accessibility">크로마틴 접근성 데이터와 결합(Binding with Chromatin Accessibility)</h3>
-<p>크로마틴 접근성(chromatin accessibility) 데이터를 모델에 포함하여 결합 예측 성능을 향상시키는 예제입니다.</p>
+<section id="크로마틴-접근성-데이터-활용하기" class="level3">
+<h3 class="anchored" data-anchor-id="크로마틴-접근성-데이터-활용하기">크로마틴 접근성 데이터 활용하기</h3>
+<p>크로마틴 접근성(Chromatin Accessibility) 데이터를 모델에 추가해 결합 예측의 정확도를 한 단계 높이는 방법을 알아봅니다.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> deepchem <span class="im">as</span> dc</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow.keras.layers <span class="im">as</span> layers</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Train a model to predict transcription factor binding, based on both</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># sequence and chromatin accessibility.</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 서열 정보와 크로마틴 접근성(Chromatin Accessibility) 데이터를 모두 활용해</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 전사 인자 결합을 예측하는 모델을 훈련합니다.</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the model.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델을 구축합니다.</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">101</span>, <span class="dv">4</span>))</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>accessibility <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">1</span>,))</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>prev <span class="op">=</span> features</span>
@@ -350,7 +352,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    model_dir<span class="op">=</span><span class="st">"chromatin"</span>,</span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data.</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터를 로드합니다.</span></span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> dc.data.DiskDataset(<span class="st">"train_dataset"</span>)</span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>valid <span class="op">=</span> dc.data.DiskDataset(<span class="st">"valid_dataset"</span>)</span>
 <span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>span_accessibility <span class="op">=</span> {}</span>
@@ -359,19 +361,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    span_accessibility[fields[<span class="dv">0</span>]] <span class="op">=</span> <span class="bu">float</span>(fields[<span class="dv">1</span>])</span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a generator function to produce batches.</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 배치(batch) 데이터를 생성하는 제너레이터 함수를 정의합니다.</span></span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_batches(dataset, epochs):</span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
 <span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> X, y, w, ids <span class="kw">in</span> dataset.iterbatches(batch_size<span class="op">=</span><span class="dv">1000</span>, pad_batches<span class="op">=</span><span class="va">True</span>):</span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">yield</span> ([X, np.array([span_accessibility[<span class="bu">id</span>] <span class="cf">for</span> <span class="bu">id</span> <span class="kw">in</span> ids])], [y], [w])</span>
 <span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model, tracking its performance on the training and validation datasets.</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델을 훈련하며 훈련 및 검증 데이터셋에서의 성능 변화를 확인합니다.</span></span>
 <span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>metric <span class="op">=</span> dc.metrics.Metric(dc.metrics.roc_auc_score)</span>
 <span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">20</span>):</span>
 <span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    model.fit_generator(generate_batches(train, epochs<span class="op">=</span><span class="dv">10</span>))</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(model.evaluate_generator(generate_batches(train, <span class="dv">1</span>), [metric]))</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(model.evaluate_generator(generate_batches(valid, <span class="dv">1</span>), [metric]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"에포크 </span><span class="sc">{</span>i<span class="op">*</span><span class="dv">10</span><span class="op">+</span><span class="dv">10</span><span class="sc">}</span><span class="ss"> - 훈련 데이터 ROC-AUC 점수: </span><span class="sc">{</span>model<span class="sc">.</span>evaluate_generator(generate_batches(train, <span class="dv">1</span>), [metric])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"에포크 </span><span class="sc">{</span>i<span class="op">*</span><span class="dv">10</span><span class="op">+</span><span class="dv">10</span><span class="sc">}</span><span class="ss"> - 검증 데이터 ROC-AUC 점수: </span><span class="sc">{</span>model<span class="sc">.</span>evaluate_generator(generate_batches(valid, <span class="dv">1</span>), [metric])<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

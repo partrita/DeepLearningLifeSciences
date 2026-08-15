@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Chapter 8: 당뇨병성 망막병증(Diabetic Retinopathy) 탐지 – Deep Learning for the Life Sciences</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -69,15 +72,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../Chapter07/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-803ae4f7a8810f475153517dc3c4ebae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-2dcff80ce44e81cc327f7b5509d9652d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -107,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -215,7 +217,7 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 (Model Optimization and Uncertainty)</span></a>
+  <a href="../Chapter10/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Chapter 10: 모델 최적화 및 불확실성 추정</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -239,12 +241,12 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#프로젝트-구조" id="toc-프로젝트-구조" class="nav-link active" data-scroll-target="#프로젝트-구조">프로젝트 구조</a></li>
-  <li><a href="#상세-구현" id="toc-상세-구현" class="nav-link" data-scroll-target="#상세-구현">상세 구현</a>
+  <li><a href="#프로젝트-구조-살펴보기" id="toc-프로젝트-구조-살펴보기" class="nav-link active" data-scroll-target="#프로젝트-구조-살펴보기">프로젝트 구조 살펴보기</a></li>
+  <li><a href="#상세-구현-내용" id="toc-상세-구현-내용" class="nav-link" data-scroll-target="#상세-구현-내용">상세 구현 내용</a>
   <ul class="collapse">
-  <li><a href="#데이터-로딩-data-loading" id="toc-데이터-로딩-data-loading" class="nav-link" data-scroll-target="#데이터-로딩-data-loading">데이터 로딩 (Data Loading)</a></li>
-  <li><a href="#모델-구조-model-architecture" id="toc-모델-구조-model-architecture" class="nav-link" data-scroll-target="#모델-구조-model-architecture">모델 구조 (Model Architecture)</a></li>
-  <li><a href="#실행-execution" id="toc-실행-execution" class="nav-link" data-scroll-target="#실행-execution">실행 (Execution)</a></li>
+  <li><a href="#데이터-로딩-및-전처리" id="toc-데이터-로딩-및-전처리" class="nav-link" data-scroll-target="#데이터-로딩-및-전처리">데이터 로딩 및 전처리</a></li>
+  <li><a href="#의료-진단-모델-설계" id="toc-의료-진단-모델-설계" class="nav-link" data-scroll-target="#의료-진단-모델-설계">의료 진단 모델 설계</a></li>
+  <li><a href="#학습-및-실행" id="toc-학습-및-실행" class="nav-link" data-scroll-target="#학습-및-실행">학습 및 실행</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -271,16 +273,16 @@ window.Quarto = {
 </header>
 
 
-<p>이 장에서는 딥러닝을 사용하여 망막 영상에서 당뇨병성 망막병증(DR)을 탐지하는 과정에 중점을 둡니다.</p>
-<section id="프로젝트-구조" class="level2">
-<h2 class="anchored" data-anchor-id="프로젝트-구조">프로젝트 구조</h2>
-<p>프로젝트는 여러 모듈로 나뉘어져 있습니다: - <code>data.py</code>: 망막 이미지의 로딩 및 전처리를 담당합니다. - <code>model.py</code>: 딥러닝 모델의 구조를 정의합니다. - <code>run.py</code>: 모델 학습 및 평가를 위한 메인 실행 파일입니다.</p>
+<p>이 장에서는 딥러닝이 실제 의료 진단에 어떻게 기여할 수 있는지 보여주는 대표적인 사례로, 망막 영상을 분석해 당뇨병성 망막병증(DR) 유무를 판별하는 프로젝트를 진행합니다.</p>
+<section id="프로젝트-구조-살펴보기" class="level2">
+<h2 class="anchored" data-anchor-id="프로젝트-구조-살펴보기">프로젝트 구조 살펴보기</h2>
+<p>효율적인 분석을 위해 프로젝트를 세 가지 핵심 모듈로 구성했습니다: - <code>data.py</code>: 망막 이미지의 로딩과 전처리를 담당합니다. - <code>model.py</code>: 진단에 최적화된 딥러닝 모델의 구조를 정의합니다. - <code>run.py</code>: 모델의 학습부터 평가까지 전체 과정을 제어하는 실행 파일입니다.</p>
 </section>
-<section id="상세-구현" class="level2">
-<h2 class="anchored" data-anchor-id="상세-구현">상세 구현</h2>
-<section id="데이터-로딩-data-loading" class="level3">
-<h3 class="anchored" data-anchor-id="데이터-로딩-data-loading">데이터 로딩 (Data Loading)</h3>
-<p><code>data.py</code> 파일 내 <code>load_images_DR</code> 함수는 이미지를 중심에 맞춰 자르고 <span class="math inline">\(512 \times 512\)</span> 해상도로 크기를 조정하는 전처리 과정을 수행합니다.</p>
+<section id="상세-구현-내용" class="level2">
+<h2 class="anchored" data-anchor-id="상세-구현-내용">상세 구현 내용</h2>
+<section id="데이터-로딩-및-전처리" class="level3">
+<h3 class="anchored" data-anchor-id="데이터-로딩-및-전처리">데이터 로딩 및 전처리</h3>
+<p><code>data.py</code>의 <code>load_images_DR</code> 함수는 이미지를 중심에 맞춰 깔끔하게 자르고, 모델이 처리하기 좋게 <span class="math inline">\(512 \times 512\)</span> 해상도로 크기를 조정합니다.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> __future__ <span class="im">import</span> division</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> __future__ <span class="im">import</span> unicode_literals</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -291,23 +293,23 @@ window.Quarto = {
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">Diabetic Retinopathy Images loader.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">당뇨병성 망막병증(Diabetic Retinopathy) 영상 로더입니다.</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>logger <span class="op">=</span> logging.getLogger(<span class="va">__name__</span>)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_images_DR(split<span class="op">=</span><span class="st">"random"</span>, seed<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Loader for DR images"""</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""당뇨병성 망막병증(DR) 영상을 불러오는 로더입니다."""</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    data_dir <span class="op">=</span> deepchem.utils.get_data_dir()</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    images_path <span class="op">=</span> os.path.join(data_dir, <span class="st">"DR"</span>, <span class="st">"train"</span>)</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    label_path <span class="op">=</span> os.path.join(data_dir, <span class="st">"DR"</span>, <span class="st">"trainLabels.csv"</span>)</span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> os.path.exists(images_path) <span class="kw">or</span> <span class="kw">not</span> os.path.exists(label_path):</span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        logger.warn(</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Cannot locate data, </span><span class="ch">\n</span><span class="op">\</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="st">        all images(.png) should be stored in the folder: $DEEPCHEM_DATA_DIR/DR/train/,</span><span class="ch">\n</span><span class="op">\</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="st">        corresponding label file should be stored as $DEEPCHEM_DATA_DIR/DR/trainLabels.csv.</span><span class="ch">\n</span><span class="op">\</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="st">        Please refer to https://www.kaggle.com/c/diabetic-retinopathy-detection for data access"</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"데이터를 찾을 수 없습니다. </span><span class="ch">\n</span><span class="op">\</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="st">        모든 영상 파일(.png)은 다음 폴더에 저장되어야 합니다: $DEEPCHEM_DATA_DIR/DR/train/,</span><span class="ch">\n</span><span class="op">\</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="st">        해당 라벨 파일은 $DEEPCHEM_DATA_DIR/DR/trainLabels.csv 경로에 저장되어야 합니다.</span><span class="ch">\n</span><span class="op">\</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="st">        데이터 접근에 대해서는 https://www.kaggle.com/c/diabetic-retinopathy-detection를 참조하세요."</span></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        )</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    image_names <span class="op">=</span> os.listdir(images_path)</span>
@@ -330,7 +332,7 @@ window.Quarto = {
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    all_labels <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(<span class="op">*</span>np.transpose(np.array(pd.read_csv(label_path)))))</span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of images: </span><span class="sc">%d</span><span class="st">"</span> <span class="op">%</span> <span class="bu">len</span>(image_names))</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"전체 영상 개수: </span><span class="sc">%d</span><span class="st">"</span> <span class="op">%</span> <span class="bu">len</span>(image_names))</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> np.array(</span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>        [all_labels[os.path.splitext(n)[<span class="dv">0</span>][<span class="dv">4</span>:]] <span class="cf">for</span> n <span class="kw">in</span> image_names]</span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    ).reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
@@ -357,20 +359,20 @@ window.Quarto = {
 <span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cut_raw_images(all_images, path):</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Preprocess images:</span></span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="co">    (1) Crop the central square including retina</span></span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="co">    (2) Reduce resolution to 512 * 512</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""영상 전처리를 수행합니다:</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="co">    (1) 망막을 포함한 중앙 영역을 정사각형으로 자릅니다.</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="co">    (2) 해상도를 512 * 512로 조정합니다.</span></span>
 <span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Num of images to be processed: </span><span class="sc">%d</span><span class="st">"</span> <span class="op">%</span> <span class="bu">len</span>(all_images))</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"처리할 영상 개수: </span><span class="sc">%d</span><span class="st">"</span> <span class="op">%</span> <span class="bu">len</span>(all_images))</span>
 <span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>        <span class="im">import</span> cv2</span>
 <span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span>:  <span class="co"># noqa: E722</span></span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>        logger.warn(<span class="st">"OpenCV required for image preprocessing"</span>)</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>        logger.warn(<span class="st">"영상 전처리를 위해 OpenCV가 필요합니다."</span>)</span>
 <span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
 <span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, img_path <span class="kw">in</span> <span class="bu">enumerate</span>(all_images):</span>
 <span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">%</span> <span class="dv">100</span> <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"on image </span><span class="sc">%d</span><span class="st">"</span> <span class="op">%</span> i)</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"</span><span class="sc">%d</span><span class="st">번째 영상 처리 중..."</span> <span class="op">%</span> i)</span>
 <span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> os.path.exists(</span>
 <span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>            os.path.join(path, <span class="st">"cut_"</span> <span class="op">+</span> os.path.splitext(img_path)[<span class="dv">0</span>] <span class="op">+</span> <span class="st">".png"</span>)</span>
 <span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>        ):</span>
@@ -397,15 +399,15 @@ window.Quarto = {
 <span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>            os.path.join(path, <span class="st">"cut_"</span> <span class="op">+</span> os.path.splitext(img_path)[<span class="dv">0</span>] <span class="op">+</span> <span class="st">".png"</span>), img_cut</span>
 <span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="모델-구조-model-architecture" class="level3">
-<h3 class="anchored" data-anchor-id="모델-구조-model-architecture">모델 구조 (Model Architecture)</h3>
-<p>특별히 영상 진단 목적을 위해 설계된 모델입니다.</p>
+<section id="의료-진단-모델-설계" class="level3">
+<h3 class="anchored" data-anchor-id="의료-진단-모델-설계">의료 진단 모델 설계</h3>
+<p>정밀한 영상 진단을 목표로 설계된 딥러닝 모델의 구조를 살펴봅니다.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python2</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -*- coding: utf-8 -*-</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">Created on Mon Sep 10 06:12:10 2018</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">2018년 9월 10일 월요일 생성</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">@author: zqwu</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">@작성자: zqwu</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> deepchem <span class="im">as</span> dc</span>
@@ -430,22 +432,22 @@ window.Quarto = {
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>kwargs,</span>
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    ):</span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">        Parameters</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">        매개변수(Parameters)</span></span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">        ----------</span></span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">        n_tasks: int</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">          Number of tasks</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">          작업(Task)의 수</span></span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">        image_size: int</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">          Resolution of the input images(square)</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">          입력 영상의 해상도 (정사각형)</span></span>
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">        n_downsample: int</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co">          Downsample ratio in power of 2</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co">          2의 거듭제곱 비율로 다운샘플링 수행</span></span>
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co">        n_init_kernel: int</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">          Kernel size for the first convolutional layer</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">          첫 번째 합성곱 층(Convolutional layer)의 커널 크기</span></span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co">        n_fully_connected: list of int</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co">          Shape of FC layers after convolutions</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co">          합성곱 연산 후 이어지는 완전 연결 층(FC layer)의 구조</span></span>
 <span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">        n_classes: int</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">          Number of classes to predict (only used in classification mode)</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">          예측할 클래스 수 (분류 모드에서만 사용)</span></span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co">        augment: bool</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">          If to use data augmentation</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">          데이터 증강(Data augmentation) 사용 여부</span></span>
 <span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
 <span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_tasks <span class="op">=</span> n_tasks</span>
 <span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image_size <span class="op">=</span> image_size</span>
@@ -455,27 +457,27 @@ window.Quarto = {
 <span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_classes <span class="op">=</span> n_classes</span>
 <span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.augment <span class="op">=</span> augment</span>
 <span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>        <span class="co"># inputs placeholder</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 입력 플레이스홀더(Inputs placeholder)</span></span>
 <span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.inputs <span class="op">=</span> tf.keras.Input(</span>
 <span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>            shape<span class="op">=</span>(<span class="va">self</span>.image_size, <span class="va">self</span>.image_size, <span class="dv">3</span>), dtype<span class="op">=</span>tf.float32</span>
 <span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data preprocessing and augmentation</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 데이터 전처리 및 증강</span></span>
 <span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>        in_layer <span class="op">=</span> DRAugment(</span>
 <span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.augment, batch_size, size<span class="op">=</span>(<span class="va">self</span>.image_size, <span class="va">self</span>.image_size)</span>
 <span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        )(<span class="va">self</span>.inputs)</span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># first conv layer</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 첫 번째 합성곱 층</span></span>
 <span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>        in_layer <span class="op">=</span> layers.Conv2D(</span>
 <span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>            <span class="bu">int</span>(<span class="va">self</span>.n_init_kernel), kernel_size<span class="op">=</span><span class="dv">7</span>, padding<span class="op">=</span><span class="st">"same"</span></span>
 <span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>        )(in_layer)</span>
 <span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>        in_layer <span class="op">=</span> layers.BatchNormalization()(in_layer)</span>
 <span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>        in_layer <span class="op">=</span> layers.ReLU()(in_layer)</span>
 <span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>        <span class="co"># downsample by max pooling</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 최대 풀링(Max pooling)을 통한 다운샘플링</span></span>
 <span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>        res_in <span class="op">=</span> layers.MaxPool2D(pool_size<span class="op">=</span>(<span class="dv">3</span>, <span class="dv">3</span>), strides<span class="op">=</span>(<span class="dv">2</span>, <span class="dv">2</span>))(in_layer)</span>
 <span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ct_module <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_downsample <span class="op">-</span> <span class="dv">1</span>):</span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>            <span class="co"># each module is a residual convolutional block</span></span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>            <span class="co"># followed by a convolutional downsample layer</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 각 모듈은 잔차 합성곱 블록(Residual convolutional block)과</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 이어지는 합성곱 다운샘플링 층으로 구성됩니다.</span></span>
 <span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>            in_layer <span class="op">=</span> layers.Conv2D(</span>
 <span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>                <span class="bu">int</span>(<span class="va">self</span>.n_init_kernel <span class="op">*</span> <span class="dv">2</span> <span class="op">**</span> (ct_module <span class="op">-</span> <span class="dv">1</span>)),</span>
 <span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>                kernel_size<span class="op">=</span><span class="dv">1</span>,</span>
@@ -505,16 +507,16 @@ window.Quarto = {
 <span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>            )(res_out)</span>
 <span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>            res_in <span class="op">=</span> layers.BatchNormalization()(res_in)</span>
 <span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>        <span class="co"># max pooling over the final outcome</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 최종 결과에 대한 최대 풀링</span></span>
 <span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>        in_layer <span class="op">=</span> layers.Lambda(<span class="kw">lambda</span> x: tf.reduce_max(x, axis<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">2</span>)))(res_in)</span>
 <span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>        regularizer <span class="op">=</span> tf.keras.regularizers.l2(<span class="fl">0.1</span>)</span>
 <span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> layer_size <span class="kw">in</span> <span class="va">self</span>.n_fully_connected:</span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>            <span class="co"># fully connected layers</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 완전 연결 층</span></span>
 <span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>            in_layer <span class="op">=</span> layers.Dense(</span>
 <span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>                layer_size, activation<span class="op">=</span>tf.nn.relu, kernel_regularizer<span class="op">=</span>regularizer</span>
 <span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>            )(in_layer)</span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>            <span class="co"># dropout for dense layers</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 은닉층을 위한 드롭아웃(Dropout)</span></span>
 <span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>            <span class="co"># in_layer = layers.Dropout(0.25)(in_layer)</span></span>
 <span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>        logit_pred <span class="op">=</span> layers.Dense(<span class="va">self</span>.n_tasks <span class="op">*</span> <span class="va">self</span>.n_classes)(in_layer)</span>
@@ -590,18 +592,18 @@ window.Quarto = {
 <span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>kwargs,</span>
 <span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>    ):</span>
 <span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a><span class="co">        Parameters</span></span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a><span class="co">        매개변수(Parameters)</span></span>
 <span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a><span class="co">        ----------</span></span>
 <span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a><span class="co">        augment: bool</span></span>
-<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a><span class="co">          If to use data augmentation</span></span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a><span class="co">          데이터 증강 사용 여부</span></span>
 <span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a><span class="co">        batch_size: int</span></span>
-<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="co">          Number of images in the batch</span></span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="co">          배치 내 영상 개수</span></span>
 <span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a><span class="co">        distort_color: bool</span></span>
-<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="co">          If to apply random distortion on the color</span></span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="co">          색상 왜곡 무작위 적용 여부</span></span>
 <span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="co">        central_crop: bool</span></span>
-<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a><span class="co">          If to randomly crop the sample around the center</span></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a><span class="co">          중앙 중심의 무작위 자르기 적용 여부</span></span>
 <span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="co">        size: int</span></span>
-<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a><span class="co">          Resolution of the input images(square)</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a><span class="co">          입력 영상의 해상도 (정사각형)</span></span>
 <span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
 <span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.augment <span class="op">=</span> augment</span>
 <span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.batch_size <span class="op">=</span> batch_size</span>
@@ -625,7 +627,7 @@ window.Quarto = {
 <span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>                    img <span class="op">=</span> tf.image.random_saturation(img, lower<span class="op">=</span><span class="fl">0.5</span>, upper<span class="op">=</span><span class="fl">1.5</span>)</span>
 <span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a>                    img <span class="op">=</span> tf.clip_by_value(img, <span class="fl">0.0</span>, <span class="fl">1.0</span>)</span>
 <span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="va">self</span>.central_crop:</span>
-<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># sample cut ratio from a clipped gaussian</span></span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># 절단된 가우시안 분포로부터 샘플 비율을 추출합니다.</span></span>
 <span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>                    img <span class="op">=</span> tf.image.central_crop(</span>
 <span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a>                        img, np.clip(np.random.normal(<span class="fl">1.0</span>, <span class="fl">0.06</span>), <span class="fl">0.8</span>, <span class="fl">1.0</span>)</span>
 <span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a>                    )</span>
@@ -636,9 +638,9 @@ window.Quarto = {
 <span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> tf.map_fn(preprocess, parent_tensor)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="실행-execution" class="level3">
-<h3 class="anchored" data-anchor-id="실행-execution">실행 (Execution)</h3>
-<p><code>run.py</code> 파일을 사용하여 학습 프로세스를 시작할 수 있습니다.</p>
+<section id="학습-및-실행" class="level3">
+<h3 class="anchored" data-anchor-id="학습-및-실행">학습 및 실행</h3>
+<p>이제 <code>run.py</code>를 실행해 모델 학습을 시작하고 결과를 확인해 보겠습니다.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> deepchem <span class="im">as</span> dc</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># import numpy as np</span></span>
@@ -649,15 +651,15 @@ window.Quarto = {
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> data <span class="im">import</span> load_images_DR</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">Created on Mon Sep 10 06:12:11 2018</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">2018년 9월 10일 월요일 생성</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">@author: zqwu</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">@작성자: zqwu</span></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>RETRAIN <span class="op">=</span> <span class="va">True</span></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>train, valid, test <span class="op">=</span> load_images_DR(split<span class="op">=</span><span class="st">"random"</span>, seed<span class="op">=</span><span class="dv">123</span>)</span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Define and build model</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델 정의 및 구축</span></span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DRModel(</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    n_init_kernel<span class="op">=</span><span class="dv">32</span>,</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">32</span>,</span>
@@ -680,14 +682,14 @@ window.Quarto = {
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>logger.setLevel(logging.DEBUG)</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> RETRAIN:</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"About to fit model for 10 epochs"</span>)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"10 에포크 동안 모델 학습을 시작합니다."</span>)</span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    model.fit(train, nb_epoch<span class="op">=</span><span class="dv">10</span>, checkpoint_interval<span class="op">=</span><span class="dv">1000</span>)</span>
 <span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"About to start train metrics evaluation"</span>)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"훈련 데이터 지표 평가를 시작합니다."</span>)</span>
 <span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.evaluate(train, metrics, n_classes<span class="op">=</span><span class="dv">5</span>))</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"About to start valid confusion matrix evaluation"</span>)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"검증 데이터 혼동 행렬(Confusion Matrix) 평가를 시작합니다."</span>)</span>
 <span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.evaluate(valid, cm, n_classes<span class="op">=</span><span class="dv">5</span>))</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"About to start test confusion matrix evaluation"</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"테스트 데이터 혼동 행렬 평가를 시작합니다."</span>)</span>
 <span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.evaluate(test, cm, n_classes<span class="op">=</span><span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
